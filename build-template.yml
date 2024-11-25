@@ -1,11 +1,10 @@
-#  Build Stage
-
-The build stage compiles the code for three different platforms:
-PowerPC,
-imx8, and 
-Linux-x.
-Each platform uses a different toolchain image.
-We define a reusable template for the build process and customize it for each platform.
+# Build Stage
+# The build stage compiles the code for three different platforms:
+# PowerPC,
+# imx8, and 
+# Linux-x.
+# Each platform uses a different toolchain image.
+# We define a reusable template for the build process and customize it for each platform.
 
 # Reusable Build Template:
 # This is a template that handles the general build process, allowing for platform-specific configurations via variables:
