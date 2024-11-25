@@ -79,3 +79,56 @@ Deploy the built software to a target server and verify deployment with a smoke 
 # Key Features:
 Artifacts are uploaded to the target server using scp.
 Smoke tests are performed via SSH to ensure successful deployment.
+
+# File Structure
+# Repository Layout
+
+.
+├── build-template.yaml       # Build template for building PowerPC, imx8 and linux-x
+├── deploy.yml                # For deployinf in  PowerPC, imx8 and linux-x
+├── static-code-analyses.yml  # For ststic tests in PowerPC, imx8 and linux-x
+├── .gitlab-ci.yml            # GitLab CI/CD pipeline configuration
+├── README.md                 # Project documentation
+├── test.yaml                 # For testing in PowerPC, imx8 and linux-x
+
+
+# How to Use the Pipeline
+# 1. Branch and Tag Rules
+
+Development Builds: The development branch triggers builds for PowerPC and Linux-x platforms.
+Release Builds: The main branch and tagged releases trigger builds for all platforms, including imx8.
+
+# 2. Pipeline Stages
+The pipeline runs in the following order:
+Build: Compiles the code for all platforms based on branch/tag rules.
+Static Code Analysis: Performs quality checks using an external shared CI template.
+Test: Runs tests for each platform’s build artifacts.
+Deploy: Uploads the tested artifacts to the target server and verifies the deployment.
+# 3. Customization
+Platform-Specific Changes:
+Modify the platform-specific Makefiles (Makefile.powerpc, Makefile.imx8, Makefile.linux-x) to define your build and test commands.
+Static Code Analysis:
+The external repository for static analysis is defined in the static_code_analysis job. Update the URL if necessary.
+Deployment:
+The deployment jobs use scp and ssh to upload artifacts and perform smoke tests. Ensure your target server credentials are configured in the GitLab CI/CD variables.
+
+# Pipeline Configuration
+Quick summary of the .gitlab-ci.yml configuration:
+
+# Pipeline Stages
+Build: 
+Compiles the source code for each platform.
+Static Code Analysis:
+Checks code quality using external tools.
+Test: 
+Runs platform-specific tests.
+Deploy: 
+Deploys the software to a target server and verifies it.
+# Reusable Templates
+The pipeline uses reusable job templates (.build_template and static_code_analysis) to avoid redundancy and ensure consistency across jobs.
+# Branch and Tag Rules
+Specific rules ensure that:
+Development builds focus on PowerPC and Linux-x.
+Release builds include all platforms (PowerPC, Linux-x, and imx8).
+
+
