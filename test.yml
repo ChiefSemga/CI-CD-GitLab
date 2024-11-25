@@ -1,0 +1,35 @@
+# Test Stage:
+# The test stage runs platform-specific tests after the build stage. 
+# Each platform has its own test job, which depends on the successful completion of its respective build job.
+# Platform-Specific Test Jobs:
+# Each test job runs tests from the corresponding Makefile.
+
+# PowerPC Test Job:
+
+test_powerpc:
+  script:
+    - echo "Running tests on PowerPC build"
+    - make test -f Makefile.powerpc  # Test using PowerPC-specific Makefile
+  stage: test
+  dependencies:
+    - build_powerpc  # Ensure that build job has completed before running tests
+
+# imx8 Test Job:
+
+test_imx8:
+  script:
+    - echo "Running tests on imx8 build"
+    - make test -f Makefile.imx8  # Test using imx8-specific Makefile
+  stage: test
+  dependencies:
+    - build_imx8  # Ensure that build job has completed before running tests
+
+# Linux-x Test Job:
+
+test_linux_x:
+  script:
+    - echo "Running tests on Linux-x build"
+    - make test -f Makefile.linux-x  # Test using Linux-x-specific Makefile
+  stage: test
+  dependencies:
+    - build_linux_x  # Ensure that build job has completed before running tests
