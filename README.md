@@ -1,9 +1,7 @@
 # CI-CD-GitLab
-# Project:
 
-To create a pseudo Gitlab CI pipeline (deliver a .yaml file), with the following stages:
+# Project: To create a pseudo Gitlab CI pipeline (deliver a .yaml file), with the following stages:
 
- 
 
 - Build
 
