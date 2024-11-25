@@ -179,7 +179,8 @@ Check the smoke test command to ensure it properly verifies the deployment.
  - Introduce automated rollback mechanisms for failed deployments.
 
 # Contributors
-Alexander Semga: Pipeline design and configuration.
+# Alexander Semga: 
+Pipeline design and configuration.
 
 Feel free to reach out for any questions or contributions to the pipeline. Happy coding! 🚀
 
