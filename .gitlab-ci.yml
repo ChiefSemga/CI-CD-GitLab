@@ -1,0 +1,137 @@
+# Here’s the complete .gitlab-ci.yml file combining all the stages and platform-specific jobs:
+
+stages:
+  - build
+  - static_code_analysis
+  - test
+  - deploy
+
+# Reusable build job template
+.build_template:
+  script:
+    - echo "Building on platform $PLATFORM"
+    - make -f Makefile.$PLATFORM  # Each platform will have a corresponding Makefile
+  only:
+    - development
+    - main
+    - tags
+  variables:
+    PLATFORM: ""
+
+# PowerPC build job
+build_powerpc:
+  extends: .build_template
+  platform: powerpc
+  image: powerpc-toolchain:latest
+  stage: build
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "development"'
+    - if: '$CI_COMMIT_REF_NAME =~ /^tags\/.*$/'
+
+# imx8 build job
+build_imx8:
+  extends: .build_template
+  platform: imx8
+  image: imx8-toolchain:latest
+  stage: build
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "main"'
+    - if: '$CI_COMMIT_REF_NAME =~ /^tags\/.*$/'
+
+# Linux-x build job
+build_linux_x:
+  extends: .build_template
+  platform: linux-x
+  image: linux-x-toolchain:latest
+  stage: build
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "development"'
+
+# Static code analysis job (Using external CI templates)
+static_code_analysis:
+  stage: static_code_analysis
+  script:
+    - echo "Running static code analysis on platform $PLATFORM"
+    - git clone https://gitlab.com/your-org/external-ci-templates.git
+    - cd external-ci-templates
+    - ./static_code_analysis.sh --platform $PLATFORM
+  only:
+    - development
+    - main
+    - tags
+  variables:
+    PLATFORM: ""
+
+# PowerPC static analysis
+static_analysis_powerpc:
+  extends: static_code_analysis
+  platform: powerpc
+  image: powerpc-toolchain:latest
+  stage: static_code_analysis
+
+# imx8 static analysis
+static_analysis_imx8:
+  extends: static_code_analysis
+  platform: imx8
+  image: imx8-toolchain:latest
+  stage: static_code_analysis
+
+# Linux-x static analysis
+static_analysis_linux_x:
+  extends: static_code_analysis
+  platform: linux-x
+  image: linux-x-toolchain:latest
+  stage: static_code_analysis
+
+# Test jobs for each platform
+test_powerpc:
+  script:
+    - echo "Testing PowerPC build"
+    - make test -f Makefile.powerpc
+  stage: test
+  dependencies:
+    - build_powerpc
+
+test_imx8:
+  script:
+    - echo "Testing imx8 build"
+    - make test -f Makefile.imx8
+  stage: test
+  dependencies:
+    - build_imx8
+
+test_linux_x:
+  script:
+    - echo "Testing Linux-x build"
+    - make test -f Makefile.linux-x
+  stage: test
+  dependencies:
+    - build_linux_x
+
+# Deployment job
+deploy_powerpc:
+  script:
+    - echo "Deploying PowerPC build to target"
+    - scp build_output/powerpc.tar.gz target:/path/to/deploy
+    - ssh target "test -f /path/to/deploy/powerpc.tar.gz && echo 'PowerPC deployment successful'"
+  stage: deploy
+  dependencies:
+    - test_powerpc
+
+deploy_imx8:
+  script:
+    - echo "Deploying imx8 build to target"
+    - scp build_output/imx8.tar.gz target:/path/to/deploy
+    - ssh target "test -f /path/to/deploy/imx8.tar.gz && echo 'imx8 deployment successful'"
+  stage: deploy
+  dependencies:
+    - test_imx8
+
+deploy_linux_x:
+  script:
+    - echo "Deploying Linux-x build to target"
+    - scp build_output/linux-x.tar.gz target:/path/to/deploy
+    - ssh target "test -f /path/to/deploy/linux-x.tar.gz && echo 'Linux-x deployment successful'"
+  stage: deploy
+  dependencies:
+    - test_linux_x
