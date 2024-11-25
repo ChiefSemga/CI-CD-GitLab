@@ -1,0 +1,43 @@
+# The static code analysis stage uses an external GitLab CI template repository for running code analysis. 
+# We define a job to clone this repository and run the static analysis script, specifying the platform as a variable.
+# Static Code Analysis Template:
+
+static_code_analysis:
+  stage: static_code_analysis
+  script:
+    - echo "Running static code analysis on platform $PLATFORM"
+    - git clone https://gitlab.com/your-org/external-ci-templates.git  # External templates
+    - cd external-ci-templates
+    - ./static_code_analysis.sh --platform $PLATFORM  # Run static analysis based on the platform
+  only:
+    - development
+    - main
+    - tags
+  variables:
+    PLATFORM: ""  # Default empty, to be set by each platform-specific static analysis job
+
+# Platform-Specific Static Code Analysis Jobs:
+# Each platform will extend the static code analysis job and set the platform-specific variable:
+
+# PowerPC Static Analysis Job:
+static_analysis_powerpc:
+  extends: static_code_analysis
+  platform: powerpc
+  image: powerpc-toolchain:latest
+  stage: static_code_analysis
+
+# imx8 Static Analysis Job:
+
+static_analysis_imx8:
+  extends: static_code_analysis
+  platform: imx8
+  image: imx8-toolchain:latest
+  stage: static_code_analysis
+
+# Linux-x Static Analysis Job:
+
+static_analysis_linux_x:
+  extends: static_code_analysis
+  platform: linux-x
+  image: linux-x-toolchain:latest
+  stage: static_code_analysis
