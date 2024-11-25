@@ -134,12 +134,54 @@ Release builds include all platforms (PowerPC, Linux-x, and imx8).
 # Environment Variables
 To run this pipeline, you must configure the following environment variables in your GitLab project settings:
 
-
-# Variable Name                         	# Purpose
+   Variable Name                       Purpose
 CI_REGISTRY_USER	               Username for container registry (if needed).
 CI_REGISTRY_PASSWORD	           Password for container registry (if needed).
 TARGET_SERVER	                  Target server address for deployment.
 SSH_PRIVATE_KEY	                Private key for SSH access to the target.
+
+
+# How to Modify the Pipeline
+# Add a New Platform
+ - Add a new Makefile (e.g., Makefile.new-platform) for the new platform.
+ - Add corresponding jobs in the .gitlab-ci.yml file:
+ - Extend the .build_template for the build job.
+# Extend static_code_analysis for static analysis.
+Add test and deploy jobs.
+Change Static Analysis Tools
+Update the repository URL in the static_code_analysis job to point to the new static analysis scripts.
+Modify the script to include any additional arguments or flags required by the new tool.
+# Update Deployment Process
+Modify the deploy_* jobs to include new deployment commands or scripts.
+Update the smoke test logic in the deployment job scripts
+
+# Troubleshooting
+# Common Issues
+
+1- Pipeline Fails on Build Stage:
+
+Ensure the correct toolchain image is specified for each platform.
+Verify that the Makefiles (Makefile.powerpc, Makefile.imx8, Makefile.linux-x) are properly configured.
+
+2- Static Analysis Errors:
+
+Check if the external static analysis repository URL is correct.
+Verify that the static analysis script accepts the --platform argument.
+
+3- Deployment Fails:
+
+Ensure the target server credentials (e.g., TARGET_SERVER and SSH_PRIVATE_KEY) are correctly configured in the GitLab CI/CD variables.
+Check the smoke test command to ensure it properly verifies the deployment.
+
+# Future Improvements
+ - Add containerized testing environments for more consistent test results.
+ - Automate artifact storage and retrieval using GitLab’s artifact system.
+ - Introduce automated rollback mechanisms for failed deployments.
+
+# Contributors
+Alexander Semga: Pipeline design and configuration.
+
+Feel free to reach out for any questions or contributions to the pipeline. Happy coding! 🚀
 
 
 
