@@ -1,0 +1,20 @@
+
+# Complete Explanation:
+
+# Build Stage:
+
+Each platform has its own build job (build_powerpc, build_imx8, build_linux_x), which uses a reusable build template.
+The build jobs are triggered based on branch or tag rules (e.g., imx8 builds only on main or tags).
+
+# Static Code Analysis Stage:
+
+The static code analysis jobs run after the build. The jobs clone an external template repository and run static analysis scripts using platform-specific configurations.
+
+# Test Stage:
+
+After the build, platform-specific test jobs execute tests defined in corresponding Makefiles. Each test job depends on its related build job to ensure the code is built before testing.
+
+# Deploy Stage:
+
+Each deploy job uploads the build artifacts to the target server using scp and then runs a smoke test on the target server to verify the deployment.
+This .gitlab-ci.yml ensures efficient parallelization and separation of concerns for different platforms, along with automatic deployment and verification steps.
