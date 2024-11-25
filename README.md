@@ -131,4 +131,15 @@ Specific rules ensure that:
 Development builds focus on PowerPC and Linux-x.
 Release builds include all platforms (PowerPC, Linux-x, and imx8).
 
+# Environment Variables
+To run this pipeline, you must configure the following environment variables in your GitLab project settings:
+
+
+# Variable Name                         	# Purpose
+CI_REGISTRY_USER	               Username for container registry (if needed).
+CI_REGISTRY_PASSWORD	           Password for container registry (if needed).
+TARGET_SERVER	                  Target server address for deployment.
+SSH_PRIVATE_KEY	                Private key for SSH access to the target.
+
+
 
