@@ -1,0 +1,39 @@
+# Deploy Stage:
+# The deployment stage uploads the built software to a target server and performs a smoke test to ensure the deployment was successful. 
+# Each platform has a corresponding deploy job.
+
+# Platform-Specific Deploy Jobs:
+
+# PowerPC Deploy Job:
+
+deploy_powerpc:
+  script:
+    - echo "Deploying PowerPC build to target"
+    - scp build_output/powerpc.tar.gz target:/path/to/deploy  # SCP to target server
+    - ssh target "test -f /path/to/deploy/powerpc.tar.gz && echo 'PowerPC deployment successful'"  # Smoke test
+  stage: deploy
+  dependencies:
+    - test_powerpc  # Ensure tests have passed before deploying
+
+# imx8 Deploy Job:
+
+deploy_imx8:
+  script:
+    - echo "Deploying imx8 build to target"
+    - scp build_output/imx8.tar.gz target:/path/to/deploy  # SCP to target server
+    - ssh target "test -f /path/to/deploy/imx8.tar.gz && echo 'imx8 deployment successful'"  # Smoke test
+  stage: deploy
+  dependencies:
+    - test_imx8  # Ensure tests have passed before deploying
+
+
+# Linux-x Deploy Job:
+
+deploy_linux_x:
+  script:
+    - echo "Deploying Linux-x build to target"
+    - scp build_output/linux-x.tar.gz target:/path/to/deploy  # SCP to target server
+    - ssh target "test -f /path/to/deploy/linux-x.tar.gz && echo 'Linux-x deployment successful'"  # Smoke test
+  stage: deploy
+  dependencies:
+    - test_linux_x  # Ensure tests have passed before deploying
