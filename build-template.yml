@@ -1,0 +1,22 @@
+#  Build Stage
+
+The build stage compiles the code for three different platforms:
+PowerPC,
+imx8, and 
+Linux-x.
+Each platform uses a different toolchain image.
+We define a reusable template for the build process and customize it for each platform.
+
+# Reusable Build Template:
+This is a template that handles the general build process, allowing for platform-specific configurations via variables:
+
+.build_template:
+  script:
+    - echo "Building on platform $PLATFORM"
+    - make -f Makefile.$PLATFORM  # Each platform will have a corresponding Makefile
+  only:
+    - development
+    - main
+    - tags
+  variables:
+    PLATFORM: ""  # Default empty, to be set by each platform-specific job
