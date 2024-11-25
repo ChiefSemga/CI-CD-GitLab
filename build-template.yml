@@ -8,7 +8,7 @@ Each platform uses a different toolchain image.
 We define a reusable template for the build process and customize it for each platform.
 
 # Reusable Build Template:
-This is a template that handles the general build process, allowing for platform-specific configurations via variables:
+# This is a template that handles the general build process, allowing for platform-specific configurations via variables:
 
 .build_template:
   script:
@@ -20,3 +20,40 @@ This is a template that handles the general build process, allowing for platform
     - tags
   variables:
     PLATFORM: ""  # Default empty, to be set by each platform-specific job
+
+
+# Platform-Specific Build Jobs:
+# Each platform will extend the reusable build template, providing its specific toolchain image and setting the platform variable.
+
+# PowerPC Build Job:
+
+build_powerpc:
+  extends: .build_template
+  platform: powerpc
+  image: powerpc-toolchain:latest  # PowerPC-specific toolchain image
+  stage: build
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "development"'
+    - if: '$CI_COMMIT_REF_NAME =~ /^tags\/.*$/'
+
+# imx8 Build Job:
+
+build_imx8:
+  extends: .build_template
+  platform: imx8
+  image: imx8-toolchain:latest  # imx8-specific toolchain image
+  stage: build
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "main"'
+    - if: '$CI_COMMIT_REF_NAME =~ /^tags\/.*$/'
+
+# Linux-x Build Job:
+
+build_linux_x:
+  extends: .build_template
+  platform: linux-x
+  image: linux-x-toolchain:latest  # Linux-x-specific toolchain image
+  stage: build
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "development"'
+
